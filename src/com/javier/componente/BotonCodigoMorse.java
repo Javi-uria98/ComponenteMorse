@@ -16,16 +16,16 @@ public class BotonCodigoMorse extends Button {
     private String letraDetectada;
     private long pulsar;
     private long soltar;
-    private char duracion=' ';
-    private int corto = 0;
-    private int largo = 0;
+    private char duracion = ' ';
     private int contadorClick = 0;
 
     public BotonCodigoMorse() {
         enLetraDetectada = new ArrayList<EnLetraDetectada>();
     }
 
-    public void addEnLetraDetectada(EnLetraDetectada enLetraDetectada) { this.enLetraDetectada.add(enLetraDetectada); }
+    public void addEnLetraDetectada(EnLetraDetectada enLetraDetectada) {
+        this.enLetraDetectada.add(enLetraDetectada);
+    }
 
     public int getDuracionCorta() {
         return duracionCorta.get();
@@ -75,21 +75,21 @@ public class BotonCodigoMorse extends Button {
         this.contadorClick = contadorClick;
     }
 
-    public int getCorto() { return corto; }
+    public String getLetraDetectada() {
+        return letraDetectada;
+    }
 
-    public void setCorto(int corto) { this.corto = corto; }
+    public void setLetraDetectada(String letraDetectada) {
+        this.letraDetectada = letraDetectada;
+    }
 
-    public int getLargo() { return largo; }
+    public char getDuracion() {
+        return duracion;
+    }
 
-    public void setLargo(int largo) { this.largo = largo; }
-
-    public String getLetraDetectada() { return letraDetectada; }
-
-    public void setLetraDetectada(String letraDetectada) { this.letraDetectada = letraDetectada; }
-
-    public char getDuracion() { return duracion; }
-
-    public void setDuracion(char duracion) { this.duracion = duracion; }
+    public void setDuracion(char duracion) {
+        this.duracion = duracion;
+    }
 
     public void iniciar() {
         setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -109,33 +109,44 @@ public class BotonCodigoMorse extends Button {
 
                 System.out.println(tiempoPulsado);
 
-                if (tiempoPulsado <= duracionCorta.get())
-                    corto++;
-                else {
-                    if (tiempoPulsado > duracionCorta.get() && tiempoPulsado <= duracionLarga.get())
-                        largo++;
-                }
-
-                if (contadorClick == 2) {
-                    contadorClick = 0;
-                    if (corto == 2) {
-                        setLetraDetectada("I");
-                        corto = 0;
-                        largo = 0;
+                if (tiempoPulsado <= duracionCorta.get()) {
+                    if (duracion == ' ') {
+                        duracion = 'c';
                     } else {
-                        if (largo == 2) {
-                            setLetraDetectada("M");
-                            corto = 0;
-                            largo = 0;
+                        if (duracion == 'c') {
+                            setLetraDetectada("I");
+                            duracion = ' ';
                         } else {
-                            if (corto == 1 && largo == 1) {
-                                setLetraDetectada("A");
-                                corto = 0;
-                                largo = 0;
+                            if (duracion == 'l') {
+                                setLetraDetectada("N");
+                                duracion = ' ';
                             }
                         }
+
+                    }
+                } else {
+                    if (tiempoPulsado > duracionCorta.get() && tiempoPulsado <= duracionLarga.get()) {
+                        if (duracion == ' ') {
+                            duracion = 'l';
+                        } else {
+                            if (duracion == 'l') {
+                                setLetraDetectada("M");
+                                duracion = ' ';
+                            } else {
+                                if (duracion == 'c') {
+                                    setLetraDetectada("A");
+                                    duracion = ' ';
+                                }
+                            }
+                        }
+
                     }
 
+
+                }
+
+                if (contadorClick==2) {
+                    contadorClick=0;
                     for (EnLetraDetectada e : enLetraDetectada) {
                         e.ejecuta(letraDetectada);
                     }
